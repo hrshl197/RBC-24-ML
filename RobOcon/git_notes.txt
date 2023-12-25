@@ -1,0 +1,28 @@
+git status
+
+git commit -m "hello commit"
+
+git add file.exe
+
+git restore "file.exe"
+
+git log
+
+git log -p
+
+git branch name_branch
+
+git branch
+
+git switch name_branch
+
+git commit -a -m "hello commit"
+
+git merge -m "hello merge" name_branch
+
+git branch -d name_branch
+
+git switch -c name_new_branch
+
+
+git remote add origin https:/......
