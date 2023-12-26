@@ -1,0 +1,58 @@
+from itertools import product
+
+class SiloState:
+    def __init__(self, state):
+        self.state = state
+        self.children = []
+
+def generate_silo_states(silo_count, balls_per_silo, ball_types):
+    def generate_states(current_state, silo_index):
+        if silo_index == silo_count:
+            return SiloState(current_state)
+
+        silo_node = SiloState(current_state.copy())
+        
+        # Include the possibility of an empty silo
+        for ball_combination in product(["", *ball_types], repeat=balls_per_silo):
+            new_state = current_state.copy()
+            new_state[silo_index] = list(ball_combination)
+            silo_node.children.append(generate_states(new_state, silo_index + 1))
+
+        return silo_node
+
+    root_state = [[] for _ in range(silo_count)]
+    root = generate_states(root_state, 0)
+    return root
+
+def print_silo_states(node, level=0):
+    if node is not None:
+        print("     " * level + str(node.state))
+        for child in node.children:
+            print_silo_states(child, level + 1)
+
+def search_silo_states(node, target_state):
+    if node is not None:
+        if node.state == target_state:
+            return node
+        for child in node.children:
+            result = search_silo_states(child, target_state)
+            if result:
+                return result
+    return None
+
+# Define parameters
+silo_count = 2
+balls_per_silo = 3
+ball_types = ["0", "X"]  # Add more colors as needed
+
+# Generate and print the tree of all possible silo states
+silo_states_tree = generate_silo_states(silo_count, balls_per_silo, ball_types)
+print_silo_states(silo_states_tree)
+
+target_state = eval(input("\nEnter the target state (format: [[ball1, ball2, ball3], ...]): "))
+found_node = search_silo_states(silo_states_tree, target_state)
+
+if found_node:
+    print("\nTarget state found in the tree!")
+else:
+    print("\nTarget state not found in the tree.")
