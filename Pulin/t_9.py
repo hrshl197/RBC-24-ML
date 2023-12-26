@@ -39,7 +39,7 @@ class SiloGame:
         number = cal_list[Silo_number - 1]
         
         if 8 <= number <= 15:
-            print("The silo is already full")
+            print("The stae is not possible as the requested silo is full")
         elif number >= 15 or number <= 0:
             print("An error occurred")
         elif ball.lower() == 'x':
