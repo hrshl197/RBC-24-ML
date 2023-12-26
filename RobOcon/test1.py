@@ -1,96 +1,206 @@
-import random
-import math
-
-class GameState:
-    def __init__(self, num_baskets=5, max_balls=3):
-        self.num_baskets = num_baskets
-        self.max_balls = max_balls
-        self.state = [[None] * max_balls for _ in range(num_baskets)]  # Represents the state of baskets
-
-    def get_legal_moves(self):
-        legal_moves = []
-        for basket in range(self.num_baskets):
-            if len(self.state[basket]) < self.max_balls:
-                legal_moves.append(basket)
-        return legal_moves
-
-    def is_game_over(self):
-        for basket in range(self.num_baskets):
-            if len(self.state[basket]) >= 2 and self.state[basket][-1] == 'blue':
-                return True
-        return False
-
-    def execute_move(self, basket):
-        if basket in self.get_legal_moves():
-            self.state[basket].append('blue')
-            if len(self.state[basket]) > 1:
-                self.state[basket][-2] = 'red'  # Set the lower ball to red
-            return True
-        return False
-
-    def get_winner(self):
-        for basket in range(self.num_baskets):
-            if len(self.state[basket]) >= 2 and self.state[basket][-1] == 'blue':
-                return 'blue'
-        return 'red'
-
-class Node:
+"""
+class StateNode:
     def __init__(self, state, parent=None):
         self.state = state
         self.parent = parent
         self.children = []
-        self.visits = 0
-        self.value = 0
 
-def mcts_search(state, num_simulations=1000):
-    root = Node(state)
+    def add_child(self, child_state):
+        child_node = StateNode(child_state, parent=self)
+        self.children.append(child_node)
+        return child_node
 
-    for _ in range(num_simulations):
-        node = root
-        while not node.state.is_game_over() and not node.children:
-            node = expand(node)
+def print_state_space_tree(node, level=0):
+    print("  " * level + str(node.state))
+    for child in node.children:
+        print_state_space_tree(child, level + 1)
 
-        if node.state.is_game_over():
-            result = 1 if node.state.get_winner() == 'blue' else 0
-        else:
-            result = simulate(node.state)
+# Example usage:
+initial_state = [["","",""],["","",""],["","",""],["","",""],["","",""]]
+root = StateNode(initial_state)
 
-        backpropagate(node, result)
+child_state_B1 = [["","","O"],["","",""],["","",""],["","",""],["","",""]]
+child_state_C1 = [["","",""],["","","O"],["","",""],["","",""],["","",""]]
+child_state_D1 = [["","",""],["","",""],["","","O"],["","",""],["","",""]]
+child_state_E1 = [["","",""],["","",""],["","",""],["","","O"],["","",""]]
+child_state_F1 = [["","",""],["","",""],["","",""],["","",""],["","","O"]]
+child_state_B2 = [["","","X"],["","",""],["","",""],["","",""],["","",""]]
+child_state_C2 = [["","",""],["","","X"],["","",""],["","",""],["","",""]]
+child_state_D2 = [["","",""],["","",""],["","","X"],["","",""],["","",""]]
+child_state_E2 = [["","",""],["","",""],["","",""],["","","X"],["","",""]]
+child_state_F2 = [["","",""],["","",""],["","",""],["","",""],["","","X"]]
 
-    best_child = max(root.children, key=lambda x: x.visits)
-    return best_child.state
+node_B1 = root.add_child(child_state_B1)
+node_C1 = root.add_child(child_state_C1)
+node_D1 = root.add_child(child_state_D1)
+node_E1 = root.add_child(child_state_E1)
+node_F1 = root.add_child(child_state_F1)
+node_B2 = root.add_child(child_state_B2)
+node_C2 = root.add_child(child_state_C2)
+node_D2 = root.add_child(child_state_D2)
+node_E2 = root.add_child(child_state_E2)
+node_F2 = root.add_child(child_state_F2)
 
-def expand(node):
-    legal_moves = node.state.get_legal_moves()
-    if not legal_moves:
-        return node
+#ṇnode_G1 = node_B1.add_child(child_state_G1)
 
-    chosen_move = random.choice(legal_moves)
-    child_state = node.state.clone()
-    child_state.execute_move(chosen_move)
-    child_node = Node(child_state, parent=node)
-    node.children.append(child_node)
-    return child_node
 
-def simulate(state):
-    while not state.is_game_over():
-        legal_moves = state.get_legal_moves()
-        chosen_move = random.choice(legal_moves)
-        state.execute_move(chosen_move)
-    return 1 if state.get_winner() == 'blue' else 0
+print_state_space_tree(root)
 
-def backpropagate(node, result):
-    while node:
-        node.visits += 1
-        node.value += result
-        node = node.parent
-        result = 1 - result
+[['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+  [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', 'O', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', 'X', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X']]
+  [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', 'O', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', 'X'], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', 'X', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'X']]
+  [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', 'O', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'O']]
+    [['', '', 'X'], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', 'X', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'X']]
+  [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', 'O', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'O']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', 'X', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'X']]
+  [['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'O']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'O']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', 'O', 'O']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'O']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'O']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', 'X', 'O']]
+  [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', 'O', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'X'], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'X'], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', 'X', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'X'], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'X'], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X']]
+  [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', 'O', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', 'O'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'O']]
+    [['', '', 'X'], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', 'X', 'X'], ['', '', ''], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'X']]
+  [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', 'O', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'O'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'O']]
+    [['', '', 'X'], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', 'X', 'X'], ['', '', ''], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'X']]
+  [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', 'O', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'O']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', 'X', 'X'], ['', '', '']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'X']]
+  [['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X']]
+    [['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X']]
+    [['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', ''], ['', '', 'X']]
+    [['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', ''], ['', '', 'X']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'O'], ['', '', 'X']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', 'O', 'X']]
+    [['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X']]
+    [['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', ''], ['', '', 'X']]
+    [['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', ''], ['', '', 'X']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', 'X'], ['', '', 'X']]
+    [['', '', ''], ['', '', ''], ['', '', ''], ['', '', ''], ['', 'X', 'X']]
+"""
 
-if __name__ == "__main__":
-    initial_state = GameState()
+class Node:
+    def __init__(self, state, depth):
+        self.state = state
+        self.depth = depth
+        self.children = []
 
-    while not initial_state.is_game_over():
-        initial_state = mcts_search(initial_state)
+def generate_state_space_tree(initial_state, max_depth):
+    root = Node(initial_state, 0)
+    stack = [root]
 
-    winner = initial_state.get_winner()
-    print(f"The winner is {winner}")
+    while stack:
+        current_node = stack.pop()
+
+        if current_node.depth + 1 < max_depth:
+            for i, basket in enumerate(current_node.state):
+                # Add a red ball
+                new_basket = basket + ['O']
+                new_state = current_node.state[:i] + [new_basket] + current_node.state[i+1:]
+                child_node = Node(new_state, current_node.depth + 1)
+                current_node.children.append(child_node)
+                stack.append(child_node)
+
+                # Add a blue ball
+                if len(basket) < 3:
+                    new_basket = basket + ['X']
+                    new_state = current_node.state[:i] + [new_basket] + current_node.state[i+1:]
+                    child_node = Node(new_state, current_node.depth + 1)
+                    current_node.children.append(child_node)
+                    stack.append(child_node)
+
+    return root
+
+def print_custom_format(node, level=0):
+    print("  " * level + str(node.state))
+    for child in node.children:
+        print_custom_format(child, level + 1)
+
+# Initial state: 5 empty baskets
+initial_state = [[] for _ in range(5)]
+
+# Generate state space tree up to a certain depth
+root_node = generate_state_space_tree(initial_state, max_depth=3)
+
+# Print state space tree using the specified format
+print_custom_format(root_node)
