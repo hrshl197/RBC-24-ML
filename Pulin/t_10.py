@@ -13,25 +13,39 @@ class SiloGame:
     
     def reward_generator(self, selected_state):
         # print("buffer is filled with : ",selected_state)
+        reward_list = []
+        self.local_reward=0
         for i in range(5):
             if self.init_list[i]==selected_state[i]:
-                pass
+                self.reward+=0
+                self.local_reward+=0
             elif self.init_list[i]==["", "", ""] and selected_state[i]==["", "", "O"]:
                 self.reward+=3
+                self.local_reward+=3
             elif self.init_list[i]==["", "", "O"] and selected_state[i]==["", "O", "O"]:
                 self.reward+=2
+                self.local_reward+=2
             elif self.init_list[i]==["", "", "X"] and selected_state[i]==["", "O", "X"]:
                 self.reward+=1
+                self.local_reward+=1
             elif self.init_list[i]==["", "O", "O"] and selected_state[i]==["O", "O", "O"]:
                 self.reward+=7
+                self.local_reward+=7
             elif self.init_list[i]==["", "X", "O"] and selected_state[i]==["O", "X", "O"]:
                 self.reward+=6
+                self.local_reward+=6
             elif self.init_list[i]==["", "O", "X"] and selected_state[i]==["O", "O", "X"]:
                 self.reward+=5
+                self.local_reward+=5
             elif self.init_list[i]==["", "X", "X"] and selected_state[i]==["O", "X", "X"]:
                 self.reward+=4
+                self.local_reward+=4
             else:
                 print("An error occured in reward_generator function")
+            reward_list.append(self.local_reward)
+            self.local_reward=0
+        print(reward_list)
+            
 
     def state_selector(self, s):
         if 1 <= s <= 10:
@@ -40,7 +54,7 @@ class SiloGame:
             print("Reward generated is : ",self.reward)
             self.reward=0
             self.init_list = self.buffer[s-1]
-            self.buffer = []
+            self.buffer.clear()
             return 1
         else:
             return 0
@@ -84,6 +98,7 @@ class SiloGame:
         print(f"State {self.var+1} is : ", self.next_state)
         self.var += 1
         self.buffer.append(self.next_state)
+        self.reward_generator(self.next_state)
 
 
 def nxt_level_print():
