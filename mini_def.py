@@ -8,6 +8,16 @@ def check_2_x_winning_condition(basket_stacks):
     else:
         return False
 
+def check_1_x_winning_condition(basket_stacks):
+    cnt = 0
+    for i, basket in enumerate(basket_stacks):
+        if basket == ['x','x','x'] or  basket == ['x','o','x'] or basket == ['o','x','x']:
+            cnt += 1
+
+    if cnt == 1:
+        return True
+    else:
+        return False
 
 def evaluate_priority(basket):
     if two_x_mode_check:
@@ -27,6 +37,23 @@ def evaluate_priority(basket):
             return 5
         else:
             return 0  # Def_for_2_x
+    elif one_x_mode_check:
+        if basket == ['', '', '']:
+            return 3
+        elif basket == ['o', '', '']:
+            return 2
+        elif basket == ['x', '', '']:
+            return 1
+        elif basket == ['o', 'x', '']:
+            return 7
+        elif basket == ['o', 'o', '']:
+            return 4
+        elif basket == ['x', 'o', '']:
+            return 6
+        elif basket == ['x', 'x', '']:
+            return 5
+        else:
+            return 0  # Def_for_1_x
     else:
         if basket == ['', '', '']:
             return 3
@@ -69,10 +96,10 @@ def select_move(basket_stacks):
 # Example usage:
 #right_mostplace=top &left_mostplace=bottom
 
-basket_stacks =   [['o', 'x', 'x'], ['x', 'x', 'x'], ['o', '', ''], ['x', 'x', 'o'], ['o', 'o', 'o']]
+basket_stacks =   [['o', 'x', 'x'], ['x', 'x', ''], ['o', '', ''], ['x', '', ''], ['o', 'o', '']]
 
 two_x_mode_check = check_2_x_winning_condition(basket_stacks)
-print(two_x_mode_check)
+one_x_mode_check = check_1_x_winning_condition(basket_stacks)
 
 selected_move = select_move(basket_stacks)
 print(selected_move)
