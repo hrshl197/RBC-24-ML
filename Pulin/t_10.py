@@ -7,11 +7,11 @@ class SiloGame:
         ]
         self.init_list = [["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
         self.buffer = []
-        self.reward=0
+        # self.reward=0
         self.Total_Silo = 5
         self.var = 0
     
-    def reward_generator(self, selected_state):
+    '''def reward_generator(self, selected_state):
         # print("buffer is filled with : ",selected_state)
         reward_list = []
         self.local_reward=0
@@ -44,15 +44,15 @@ class SiloGame:
                 print("An error occured in reward_generator function")
             reward_list.append(self.local_reward)
             self.local_reward=0
-        print(reward_list)
+        print(reward_list)'''
             
 
     def state_selector(self, s):
         if 1 <= s <= 10:
             self.var = 0
-            self.reward_generator(self.buffer[s-1])
-            print("Reward generated is : ",self.reward)
-            self.reward=0
+            # self.reward_generator(self.buffer[s-1])
+            # print("Reward generated is : ",self.reward)
+            # self.reward=0
             self.init_list = self.buffer[s-1]
             self.buffer.clear()
             return 1
@@ -98,7 +98,7 @@ class SiloGame:
         print(f"State {self.var+1} is : ", self.next_state)
         self.var += 1
         self.buffer.append(self.next_state)
-        self.reward_generator(self.next_state)
+        # self.reward_generator(self.next_state)
 
 
 def nxt_level_print():
