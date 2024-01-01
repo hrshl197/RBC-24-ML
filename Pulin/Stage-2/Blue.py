@@ -72,10 +72,10 @@ class demo:
         two_x_mode_check = self.check_2_x_winning_condition(basket_stacks)
 
         selected_move = self.select_move(basket_stacks)
-        print(selected_move)
+        print("Silo Selected By Blue Team : ",selected_move)
 
         self.apply_move(basket_stacks[selected_move])
 
-        print("Next state of basket stacks:", basket_stacks)
+        # print("Next state of basket stacks:", basket_stacks)
 
         return selected_move

@@ -4,12 +4,18 @@ from random import randint
 
 class Environment:
     def __init__(self):
+        self.red_var=0
+        self.blue_var=0
+        self.red_ball=0
+        self.blue_ball=0
         self.Silos_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
 
     def push_blue(self,temp):
         if 0<=temp<=4:
-            if len(self.Silos_State[temp])<3:
-                self.Silos_State[temp].append('o')
+            if len(self.Silos_State[temp])<4:
+                for i, ball in enumerate(self.Silos_State):
+                    if ball == '':
+                        self.Silos_State[i] = 'o'
             else:
                 print("blue : Silo is already filled")
         else:
@@ -17,8 +23,10 @@ class Environment:
 
     def push_red(self,temp):
         if 0<=temp<=4:
-            if len(self.Silos_State[temp])<3:
-                self.Silos_State[temp].append('x')
+            if len(self.Silos_State[temp])<4:
+                for i, ball in enumerate(self.Silos_State):
+                    if ball == '':
+                        self.Silos_State[i] = 'x'
             else:
                 print("red : Silo is already filled")
         else:
@@ -26,7 +34,6 @@ class Environment:
 
     def select_agent(self):
         s = randint(0,9)
-        print("Random generated number is : ",s)
         if s%2==0:
             self.Blue_instance=bdo()
             Silo_number=self.Blue_instance.main(self.Silos_State)
@@ -37,17 +44,48 @@ class Environment:
             self.push_red(Silo_number)
         else:
             print("Error in agent selsction")
+        self.win_condition()
 
     def state_print(self):
         print(self.Silos_State)
     
     def win_condition(self):
-        pass
+        for i in self.Silos_State:
+            if i == ['o','o','o'] or i == ['o','x','o'] or i == ['x','o','o']:
+                self.blue_var+=1
+            elif i == ['x','x','x'] or i == ['x','o','x'] or i == ['o','x','x']:
+                self.red_var+=1
+            else:
+                for ball in self.Silos_State:
+                    for i in ball:
+                        if i == 'x':
+                            self.red_ball+=1
+                        elif i == 'o':
+                            self.blue_ball+=1
 
+        if self.blue_var>=3:
+            print("Blue Team won the match")
+            print()
+        elif self.red_var>=3:
+            print("Red team won the match")
+            print()
+        else:
+            print("No team won the match")
+            print("Red Team Point : ",self.red_ball)
+            print("Blue Team Point : ",self.blue_ball)
+            print()
+
+        self.blue_ball=0
+        self.red_ball=0
+        self.blue_var=0
+        self.red_var=0
+        
     def reset(self):
-        pass
+        self.blue_var=0
+        self.red_var=0
+        self.Silos_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
 
 game_instance=Environment()
-for i in range(20):
+for i in range(15):
     game_instance.select_agent()
     game_instance.state_print()
