@@ -70,9 +70,9 @@ class Environment:
             print("Red team won the match")
             print()
         else:
-            print("No team won the match")
-            print("Red Team Point : ",self.red_ball)
-            print("Blue Team Point : ",self.blue_ball)
+            # print("No team won the match")
+            # print("Red Team Point : ",self.red_ball)
+            # print("Blue Team Point : ",self.blue_ball)
             print()
 
         self.blue_ball=0
