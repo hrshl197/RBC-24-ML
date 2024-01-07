@@ -66,14 +66,17 @@ class Environment:
         if self.blue_var>=3:
             print("Blue Team won the match")
             print()
+            self.reset()
         elif self.red_var>=3:
             print("Red team won the match")
             print()
+            self.reset()
         else:
             # print("No team won the match")
             # print("Red Team Point : ",self.red_ball)
             # print("Blue Team Point : ",self.blue_ball)
             print()
+            # self.reset()
 
         self.blue_ball=0
         self.red_ball=0
@@ -86,6 +89,6 @@ class Environment:
         self.Silos_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
 
 game_instance=Environment()
-for i in range(15):
+for i in range(150):
     game_instance.select_agent()
     game_instance.state_print()
