@@ -69,7 +69,7 @@ def select_move(basket_stacks):
 # Example usage:
 #right_mostplace=top &left_mostplace=bottom
 
-basket_stacks = [['o', 'x', 'o'], ['o', 'x', 'o'], ['x', 'o', 'o'], ['x', 'x', 'o'], ['o', 'x', 'o']]
+basket_stacks =   [['x', '', ''], ['o', '', ''], ['x', '', ''], ['o', '', ''], ['x', '', '']]
 
 two_x_mode_check = check_2_x_winning_condition(basket_stacks)
 print(two_x_mode_check)
