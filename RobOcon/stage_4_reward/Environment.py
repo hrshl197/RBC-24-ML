@@ -20,6 +20,10 @@ class siloEnvironment:
 
         # select agent either blue or red
         s = randint(0,1)
+
+
+
+        #silo selection
         self.EG = eg()
         if s==0:
             print("Blue agent selected")
@@ -30,7 +34,7 @@ class siloEnvironment:
         else:
             print("Error in agent selsction")
 
-        # put the ball in silo 
+        # put the ball in silo
         if 0<=Silo_number<=4: # Checking wheather the selected silo number is in five
             if len(self.Silo_State[Silo_number])<4: # checking wheather the silo is empty
                 for i, ball in enumerate(self.Silo_State):
