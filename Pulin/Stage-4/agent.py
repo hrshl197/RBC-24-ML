@@ -16,11 +16,7 @@ class blueAgent:
         self.epsilon=0 # control the randomness
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
-<<<<<<< Updated upstream
         self.model = Linear_QNet(3, 256, 5) 
-=======
-        self.model = Linear_QNet(11, 256, 3) 
->>>>>>> Stashed changes
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
@@ -108,7 +104,8 @@ def train():
 
         # remember
         agent.remember(tensor_state_old,final_move,game.reward,tensor_state_new,game.game_Over)
-
+        print("One round completed")
+        
         if game.game_Over:
             # train long memory, plot result
             print('Final State : ',state_new)

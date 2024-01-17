@@ -53,7 +53,7 @@ class demo:
         for i, ball in enumerate(basket_stack):
             if ball == '':
                 basket_stack[i] = '0'
-                return
+                return basket_stack
 
 
     def select_move(self, basket_stacks):
@@ -72,7 +72,7 @@ class demo:
         two_x_mode_check = self.check_2_x_winning_condition(basket_stacks)
 
         selected_move = self.select_move(basket_stacks)
-        print("Silo Selected By Blue Team : ",selected_move)
+        # print("Silo Selected By Blue Team : ",selected_move)
 
         self.apply_move(basket_stacks[selected_move])
 

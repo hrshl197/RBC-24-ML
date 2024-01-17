@@ -33,4 +33,4 @@ class siloEnvironment:
 
     def rewardCalculate(self,state_old,state_new,final_move):
         rewd=r()
-        self.reward=rewd.reward_func(state_new,final_move,0)
+        self.reward=self.reward+rewd.reward_func(state_new,final_move,0)
