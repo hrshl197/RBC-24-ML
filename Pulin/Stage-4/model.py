@@ -32,21 +32,45 @@ class QTrainer:
         self.criterion = nn.MSELoss()
 
     def train_step(self, state, action, reward, next_state, done):
-        #state = torch.tensor(state, dtype=torch.float)
-        #next_state = torch.tensor(next_state, dtype=torch.float)
+        """# Convert input data to PyTorch tensors
+        states = torch.tensor(state, dtype=torch.float32)
+        actions = torch.tensor(action, dtype=torch.long)
+        rewards = torch.tensor(reward, dtype=torch.float32)
+        next_states = torch.tensor(next_state, dtype=torch.float32)
+        dones = torch.tensor(done, dtype=torch.float32)
+
+        # Compute Q-values for the current state and next state
+        q_values_current = self.model(states)
+        q_values_next = self.model(next_states)
+
+        # Gather Q-values for the selected actions
+        q_values_current_selected = q_values_current.gather(1, actions.unsqueeze(1))
+
+        # Compute target Q-values using the Bellman equation
+        target_q_values = rewards + self.gamma * torch.max(q_values_next, dim=1).values * (1.0 - dones)
+
+        # Calculate the TD error
+        td_error = F.mse_loss(q_values_current_selected, target_q_values.unsqueeze(1))
+
+        # Optimize the Q-network
+        self.optimizer.zero_grad()
+        td_error.backward()
+        self.optimizer.step()"""
+        state = torch.tensor(state, dtype=torch.float)
+        next_state = torch.tensor(next_state, dtype=torch.float)
         action = torch.tensor(action, dtype=torch.long)
         reward = torch.tensor(reward, dtype=torch.float)
         # (n, x)
-        i=1 # temp for trial purpose
-        if i == 1: # if state.shape==1:
+        # i=1 # temp for trial purpose
+        if len(state.shape) == 1: # if len(state.shape)==1:
             # (1, x)
             state = torch.unsqueeze(state, 0)
             next_state = torch.unsqueeze(next_state, 0)
             action = torch.unsqueeze(action, 0)
             reward = torch.unsqueeze(reward, 0)
             done = (done, )
-            i=i+1
-        # done = (done, )    
+            # i=i+1
+        done = (done, )    
         # 1: predicted Q values with current state
         pred = self.model(state)
 

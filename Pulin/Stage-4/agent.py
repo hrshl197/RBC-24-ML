@@ -17,7 +17,7 @@ class blueAgent:
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
         self.model = Linear_QNet(3, 256, 5) 
-        self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
+        self.trainer = QTrainer(self.model, LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -36,31 +36,36 @@ class blueAgent:
 
     def get_silo_number(self,state):
         # random moves: tradeoff exploration / exploitation
-        self.epsilon = 80 - self.n_games
-        # final_move = [0,0,0,0,0]
-        if random.randint(0, 200) < self.epsilon:
-            move = random.randint(0, 4)
-            # final_move[move] = 1
-        else:
-            #state0 = torch.tensor(state, dtype=torch.float)
-            state0 = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state], dtype=torch.float32)
-            prediction = self.model(state0)
-            move = torch.argmax(prediction).item()
-            #final_move[move] = 1
+        try:
+            self.epsilon = 80 - self.n_games
+            silo_selected = [0,0,0,0,0]
+            if random.randint(0, 200) < self.epsilon:
+                move = random.randint(0, 4)
+                silo_selected[move] = 1
+            else:
+                #state0 = torch.tensor(state, dtype=torch.float)
+                state0 = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state], dtype=torch.float32)
+                prediction = self.model(state0)
+                move = torch.argmax(prediction).item()
+                silo_selected[move] = 1
+        except:
+            print("An error generated")
+        finally:
+            silo_selected[1]=1
 
-        return move
+        return silo_selected
 
-    def take_action(self,state_old,final_move):
-        if 0<=final_move<=4: # Checking wheather the selected silo number is in five
-            if len(state_old[final_move])<4: # checking wheather the silo is empty
-                for i in range(len(state_old[final_move])):
-                    if state_old[final_move][i] == '':
-                        state_old[final_move][i] = '0'
+    def take_action(self,state_old,silo_selected):
+        if 0<=silo_selected<=4: # Checking wheather the selected silo number is in five
+            if len(state_old[silo_selected])<4: # checking wheather the silo is empty
+                for i in range(len(state_old[silo_selected])):
+                    if state_old[silo_selected][i] == '':
+                        state_old[silo_selected][i] = '0'
                         break
             else:
                 print("Silo is already filled")
         else:
-            print("Error in Silo Number",final_move)
+            print("Error in Silo Number",silo_selected)
         return state_old
 
 def train():
@@ -73,42 +78,53 @@ def train():
     
     # get old state
     state_old = game.Silo_State
+    # created tensor of state_old
     tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
     # tensor_state_old = torch.tensor([[float(item) for item in inner_list] for inner_list in state_old], dtype=torch.float32)
 
     i=0
     while True:
-           
+
+        # not taking this for first for loop  
         if i>=1:
             state_old = state_new
             tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
         
         # get move
-        final_move =agent.get_silo_number(state_old)
-        
+        silo_selected_list =agent.get_silo_number(state_old)
+        for j in silo_selected_list:
+            if silo_selected_list[j] == 1:
+                silo_selected=j
+
         s = random.randint(0,1)
         if s==0:
             # perform move and get new state
-            state_new = agent.take_action(state_old,final_move)
+            state_new = agent.take_action(state_old,silo_selected)
         elif s==1:
             temp_instance=D() # instance of Deff_off
             state_new=temp_instance.main(state_old)
 
-        game.rewardCalculate(state_old,state_new,final_move)
+        game.rewardCalculate(state_old,state_new)
         tensor_state_new = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_new], dtype=torch.float32)
         # tensor_state_new = torch.tensor([[float(item) for item in inner_list] for inner_list in state_new], dtype=torch.float32)
 
 
         # train short memory
-        agent.train_short_memory(tensor_state_old,final_move,game.reward,tensor_state_new,game.game_Over)
+        agent.train_short_memory(tensor_state_old,silo_selected_list,game.reward,tensor_state_new,game.game_Over)
 
         # remember
-        agent.remember(tensor_state_old,final_move,game.reward,tensor_state_new,game.game_Over)
+        agent.remember(tensor_state_old,silo_selected_list,game.reward,tensor_state_new,game.game_Over)
 
-        #check game over condition
+        #check game over condition and check winning condition
+        game.check_Win_Condition(state_new)
         game.check_Game_Over(state_new)
-        print("Round :",i+1,' Agent Selected :',s,"Current state : ",state_new)
-        
+        print('\n------------------------------------------------------------------------------')
+        print("Round :",i+1,' Agent Selected :',s,"SIlo Selected : ",silo_selected,"reward : ",game.reward,"\nCurrent state : ",state_new)
+        print('------------------------------------------------------------------------------\n')
+        i=i+1
+        if i==15:
+            game.game_Over=True
+
         if game.game_Over:
             # train long memory, plot result
             print('Final State : ',state_new)
@@ -127,7 +143,6 @@ def train():
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores)
-        i=i+1
 
 if __name__=="__main__":
     train()
