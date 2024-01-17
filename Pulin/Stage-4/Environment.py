@@ -1,3 +1,4 @@
+from reward import reward as r
 class siloEnvironment:
     def __init__(self):
         self.Silo_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
@@ -5,8 +6,8 @@ class siloEnvironment:
         self.blue_won_silo=0
         self.total_balls=0
         self.reward=0
-        self.game_Over=False
-
+        self.game_Over = False
+ 
     def reset(self):
         self.Silo_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
         self.red_won_silo=0
@@ -30,5 +31,6 @@ class siloEnvironment:
         if self.game_Over:
             self.reset()
 
-    def rewardCalculate(state_old,state_new):
-        pass
+    def rewardCalculate(self,state_old,state_new,final_move):
+        rewd=r()
+        self.reward=rewd.reward_func(state_new,final_move,0)

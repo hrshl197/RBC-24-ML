@@ -16,7 +16,7 @@ class blueAgent:
         self.epsilon=0 # control the randomness
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
-        self.model = Linear_QNet(5, 256, 5) 
+        self.model = Linear_QNet(3, 256, 5) 
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
@@ -42,14 +42,15 @@ class blueAgent:
             move = random.randint(0, 4)
             # final_move[move] = 1
         else:
-            state0 = torch.tensor(state, dtype=torch.float)
+            #state0 = torch.tensor(state, dtype=torch.float)
+            state0 = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state], dtype=torch.float32)
             prediction = self.model(state0)
             move = torch.argmax(prediction).item()
             #final_move[move] = 1
 
         return move
 
-    def take_action(state_old,final_move):
+    def take_action(self,state_old,final_move):
         if 0<=final_move<=4: # Checking wheather the selected silo number is in five
             if len(state_old[final_move])<4: # checking wheather the silo is empty
                 for i in range(len(state_old[final_move])):
@@ -69,24 +70,31 @@ def train():
     record = 0
     agent = blueAgent()
     game = siloEnvironment()
-    while True:
-        # get old state
-        state_old = game.Silo_State
-        tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
-        # tensor_state_old = torch.tensor([[float(item) for item in inner_list] for inner_list in state_old], dtype=torch.float32)
+    
+    # get old state
+    state_old = game.Silo_State
+    tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
+    # tensor_state_old = torch.tensor([[float(item) for item in inner_list] for inner_list in state_old], dtype=torch.float32)
 
+    while True:
+        
+        i=0
+        if i>=1:
+            state_old = state_new
+            tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
+        
         # get move
         final_move =agent.get_silo_number(state_old)
         
         s = random.randint(0,1)
         if s==0:
             # perform move and get new state
-            state_new =agent.take_action(state_old,final_move)
+            state_new = agent.take_action(state_old,final_move)
         elif s==1:
             temp_instance=D() 
             state_new=temp_instance.main(state_old)
 
-        game.rewardCalculate(state_old,state_new)
+        game.rewardCalculate(state_old,state_new,final_move)
         tensor_state_new = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_new], dtype=torch.float32)
         # tensor_state_new = torch.tensor([[float(item) for item in inner_list] for inner_list in state_new], dtype=torch.float32)
 
@@ -115,6 +123,7 @@ def train():
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores)
+        i=i+1
 
 if __name__=="__main__":
     train()
