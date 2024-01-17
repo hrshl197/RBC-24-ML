@@ -1,10 +1,10 @@
 class demo:
-    two_x_mode_check=False
+    two_o_mode_check=False
 
-    def check_2_x_winning_condition(self, basket_stacks):
+    def check_2_o_winning_condition(self, basket_stacks):
         cnt = 0
         for i, basket in enumerate(basket_stacks):
-            if basket == ['1','1','1'] or  basket == ['1','0','1'] or basket == ['0','1','1']:
+            if basket == ['0','0','0'] or  basket == ['0','1','0'] or basket == ['1','0','0']:
                 cnt += 1
         if cnt == 2:
             return True
@@ -13,37 +13,37 @@ class demo:
 
 
     def evaluate_priority(self, basket):
-        if self.two_x_mode_check:
+        if self.two_o_mode_check:
             if basket == ['', '', '']:
                 return 3
-            elif basket == ['0', '', '']:
-                return 2
             elif basket == ['1', '', '']:
+                return 2
+            elif basket == ['0', '', '']:
                 return 1
-            elif basket == ['0', '1', '']:
-                return 7
-            elif basket == ['0', '0', '']:
-                return 4
             elif basket == ['1', '0', '']:
-                return 6
+                return 7
             elif basket == ['1', '1', '']:
+                return 4
+            elif basket == ['1', '1', '']:
+                return 6
+            elif basket == ['0', '0', '']:
                 return 5
             else:
                 return 0  # Def_for_2_x
         else:
             if basket == ['', '', '']:
                 return 3
-            elif basket == ['0', '', '']:
-                return 2
             elif basket == ['1', '', '']:
+                return 2
+            elif basket == ['0', '', '']:
                 return 1
-            elif basket == ['0', '1', '']:
-                return 7
-            elif basket == ['0', '0', '']:
-                return 5
             elif basket == ['1', '0', '']:
-                return 6
+                return 7
             elif basket == ['1', '1', '']:
+                return 5
+            elif basket == ['0', '1', '']:
+                return 6
+            elif basket == ['0', '0', '']:
                 return 4
             else:
                 return 0  # Off
@@ -52,8 +52,8 @@ class demo:
     def apply_move(self, basket_stack):
         for i, ball in enumerate(basket_stack):
             if ball == '':
-                basket_stack[i] = '0'
-                return basket_stack
+                basket_stack[i] = '1'
+                return
 
 
     def select_move(self, basket_stacks):
@@ -69,10 +69,10 @@ class demo:
 
     def main(self,basket_stacks):
         
-        two_x_mode_check = self.check_2_x_winning_condition(basket_stacks)
+        self.two_o_mode_check = self.check_2_o_winning_condition(basket_stacks)
 
         selected_move = self.select_move(basket_stacks)
-        # print("Silo Selected By Blue Team : ",selected_move)
+        # print("Silo Selected By Red team : ",selected_move)
 
         self.apply_move(basket_stacks[selected_move])
 

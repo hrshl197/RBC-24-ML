@@ -60,7 +60,7 @@ class blueAgent:
             else:
                 print("Silo is already filled")
         else:
-            print("Error in Silo Number")
+            print("Error in Silo Number",final_move)
         return state_old
 
 def train():
@@ -76,9 +76,9 @@ def train():
     tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
     # tensor_state_old = torch.tensor([[float(item) for item in inner_list] for inner_list in state_old], dtype=torch.float32)
 
+    i=0
     while True:
-        
-        i=0
+           
         if i>=1:
             state_old = state_new
             tensor_state_old = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state_old], dtype=torch.float32)
@@ -91,7 +91,7 @@ def train():
             # perform move and get new state
             state_new = agent.take_action(state_old,final_move)
         elif s==1:
-            temp_instance=D() 
+            temp_instance=D() # instance of Deff_off
             state_new=temp_instance.main(state_old)
 
         game.rewardCalculate(state_old,state_new,final_move)
@@ -104,7 +104,10 @@ def train():
 
         # remember
         agent.remember(tensor_state_old,final_move,game.reward,tensor_state_new,game.game_Over)
-        print("One round completed")
+
+        #check game over condition
+        game.check_Game_Over(state_new)
+        print("Round :",i+1,' Agent Selected :',s,"Current state : ",state_new)
         
         if game.game_Over:
             # train long memory, plot result

@@ -23,11 +23,18 @@ class siloEnvironment:
             elif i == ['1','1','1'] or i == ['1','0','1'] or i == ['0','1','1']:
                 self.red_won_silo+=1
         if self.blue_won_silo==3 or self.red_won_silo==3 or self.total_balls==15:
-            self.GameOver=True
+            self.game_Over=True
         self.blue_won_silo=0
         self.red_won_silo=0
 
-    def check_Game_Over(self):
+    def check_Game_Over(self,state):
+        k=0
+        for i in state:
+            for j in i:
+                if j=='0' or j=='1':
+                    k=k+1
+        if k==15:
+            self.game_Over=True
         if self.game_Over:
             self.reset()
 

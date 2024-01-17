@@ -10,17 +10,17 @@ class reward:
     reward = 0
 
     for j in final_Silo_state:
-      if j == ['o','o','o'] or j == ['o','x','o'] or j == ['x','o','o']:
+      if j == ['0','0','0'] or j == ['0','1','0'] or j == ['1','0','0']:
           self.bluewin +=1
-      elif j == ['x','x','x'] or j == ['x','o','x'] or j == ['o','x','x']:
+      elif j == ['1','1','1'] or j == ['1','0','1'] or j == ['0','1','1']:
           self.redwin +=1    
 
     i = final_Silo_state[Silo_number]
 
     if agent == 0:
-      if i == ['o','o','o'] or i == ['o','x','o'] or i == ['x','o','o']:
+      if i == ['0','0','0'] or i == ['0','1','0'] or i == ['1','0','0']:
         self.blue_reward += 10
-      """elif i == ['x','x','x'] or i == ['x','o','x'] or i == ['o','x','x']:
+      """elif i == ['1','1','1'] or i == ['1','0','1'] or i == ['0','1','1']:
         self.blue_reward += -10"""
 
       if self.bluewin == 3:
@@ -31,9 +31,9 @@ class reward:
       reward = self.blue_reward
       self.blue_reward = 0
     else:
-      """if i == ['o','o','o'] or i == ['o','x','o'] or i == ['x','o','o']:
+      """if i == ['0','0','0'] or i == ['0','1','0'] or i == ['1','0','0']:
         self.red_reward += -10"""
-      if i == ['x','x','x'] or i == ['x','o','x'] or i == ['o','x','x']:
+      if i == ['1','1','1'] or i == ['1','0','1'] or i == ['0','1','1']:
         self.red_reward += 10
 
       """if self.bluewin == 3:
