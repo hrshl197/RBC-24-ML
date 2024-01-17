@@ -16,7 +16,11 @@ class blueAgent:
         self.epsilon=0 # control the randomness
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
+<<<<<<< Updated upstream
         self.model = Linear_QNet(3, 256, 5) 
+=======
+        self.model = Linear_QNet(11, 256, 3) 
+>>>>>>> Stashed changes
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
