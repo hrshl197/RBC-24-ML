@@ -32,7 +32,7 @@ class QTrainer:
         self.criterion = nn.MSELoss()
 
     def train_step(self, state, action, reward, next_state, done):
-        """# Convert input data to PyTorch tensors
+        # Convert input data to PyTorch tensors
         states = torch.tensor(state, dtype=torch.float32)
         actions = torch.tensor(action, dtype=torch.long)
         rewards = torch.tensor(reward, dtype=torch.float32)
@@ -55,8 +55,8 @@ class QTrainer:
         # Optimize the Q-network
         self.optimizer.zero_grad()
         td_error.backward()
-        self.optimizer.step()"""
-        state = torch.tensor(state, dtype=torch.float)
+        self.optimizer.step()
+        """state = torch.tensor(state, dtype=torch.float)
         next_state = torch.tensor(next_state, dtype=torch.float)
         action = torch.tensor(action, dtype=torch.long)
         reward = torch.tensor(reward, dtype=torch.float)
@@ -89,4 +89,4 @@ class QTrainer:
         loss = self.criterion(target, pred)
         loss.backward()
 
-        self.optimizer.step()
+        self.optimizer.step()"""
