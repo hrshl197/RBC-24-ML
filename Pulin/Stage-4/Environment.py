@@ -1,7 +1,7 @@
 from reward import reward as r
 class siloEnvironment:
     def __init__(self):
-        self.Silo_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
+        self.Silo_State=[[0, 0, 0],[0, 0, 0],[0, 0, 0],[0, 0, 0],[0, 0, 0]]
         self.red_won_silo=0
         self.blue_won_silo=0
         self.total_balls=0
@@ -9,7 +9,7 @@ class siloEnvironment:
         self.game_Over = False
  
     def reset(self):
-        self.Silo_State=[["", "", ""],["", "", ""],["", "", ""],["", "", ""],["", "", ""]]
+        self.Silo_State=[[0, 0, 0],[0, 0, 0],[0, 0, 0],[0, 0, 0],[0, 0, 0]]
         self.red_won_silo=0
         self.blue_won_silo=0
         self.total_balls=0
@@ -18,9 +18,9 @@ class siloEnvironment:
 
     def check_Win_Condition(self,state):
         for i in state:
-            if i == ['0','0','0'] or i == ['0','1','0'] or i == ['1','0','0']:
+            if i == [1,1,1] or i == [1,-1,1] or i == [-1,1,1]:
                 self.blue_won_silo+=1
-            elif i == ['1','1','1'] or i == ['1','0','1'] or i == ['0','1','1']:
+            elif i == [-1,-1,-1] or i == [-1,1,-1] or i == [1,-1,-1]:
                 self.red_won_silo+=1
         if self.blue_won_silo==3 or self.red_won_silo==3 or self.total_balls==15:
             self.game_Over=True

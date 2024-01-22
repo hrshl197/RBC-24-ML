@@ -29,7 +29,12 @@ class blueAgent:
             mini_sample = self.memory
 
         states, actions, rewards, next_states, dones = zip(*mini_sample)
-        self.trainer.train_step(states, actions, rewards, next_states, dones)
+        for o in range(15):
+            self.trainer.train_step(states[o], actions[o], rewards[o], next_states[o], dones[o])
+
+        """states, actions, rewards, next_states, dones = zip(*mini_sample)
+        print("the value of states: ",states)
+        self.trainer.train_step(states, actions, rewards, next_states, dones)"""
 
     def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done)
@@ -59,8 +64,8 @@ class blueAgent:
         if 0<=silo_selected<=4: # Checking wheather the selected silo number is in five
             if len(state_old[silo_selected])<4: # checking wheather the silo is empty
                 for i in range(len(state_old[silo_selected])):
-                    if state_old[silo_selected][i] == '':
-                        state_old[silo_selected][i] = '0'
+                    if state_old[silo_selected][i] == 0:
+                        state_old[silo_selected][i] = 1
                         break
             else:
                 print("Silo is already filled")
