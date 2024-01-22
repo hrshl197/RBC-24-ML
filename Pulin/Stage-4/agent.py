@@ -3,7 +3,7 @@ from Def_Off import demo as D
 from collections import deque
 from Environment import siloEnvironment
 from model import Linear_QNet, QTrainer
-from helper import plot
+from helper import plot 
 
 MAX_MEMORY=100_000_000
 BATCH_SIZE=1000
