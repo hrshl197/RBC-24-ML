@@ -32,7 +32,7 @@ class reward:
           self.bluewin +=1
       elif j == ['1','1','1'] or j == ['1','0','1'] or j == ['0','1','1']:
           self.redwin +=1"""
-    
+
     if self.bluewin == 3:
          self.blue_reward += 100
          self.red_reward  += -100

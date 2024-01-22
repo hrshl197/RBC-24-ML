@@ -56,6 +56,7 @@ class blueAgent:
         return silo_selected
 
     def take_action(self,state_old,silo_selected):
+
         if 0<=silo_selected<=4: # Checking wheather the selected silo number is in five
             if len(state_old[silo_selected])<4: # checking wheather the silo is empty
                 for i in range(len(state_old[silo_selected])):
@@ -72,7 +73,10 @@ def train():
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
+
+    #why need of record?
     record = 0
+
     agent = blueAgent()
     game = siloEnvironment()
     
