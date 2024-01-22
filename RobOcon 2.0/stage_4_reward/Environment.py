@@ -1,4 +1,5 @@
 from random import randint
+import torch
 from Epsilon_Greedy import EpsilonGreedy as eg
 
 class siloEnvironment:
