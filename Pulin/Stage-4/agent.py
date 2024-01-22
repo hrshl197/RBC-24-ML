@@ -1,7 +1,7 @@
 import torch,random,numpy as np
 from Def_Off import demo as D 
 from collections import deque
-from Environment import siloEnvironment
+from Environmen_new import siloEnvironment
 from model import Linear_QNet, QTrainer
 from helper import plot 
 
@@ -28,13 +28,13 @@ class blueAgent:
         else:
             mini_sample = self.memory
 
-        states, actions, rewards, next_states, dones = zip(*mini_sample)
-        for o in range(15):
-            self.trainer.train_step(states[o], actions[o], rewards[o], next_states[o], dones[o])
-
         """states, actions, rewards, next_states, dones = zip(*mini_sample)
-        print("the value of states: ",states)
-        self.trainer.train_step(states, actions, rewards, next_states, dones)"""
+        for o in range(15):
+            self.trainer.train_step(states[o], actions[o], rewards[o], next_states[o], dones[o])"""
+
+        states, actions, rewards, next_states, dones = zip(*mini_sample)
+        # print("the value of states: ",states)
+        self.trainer.train_step(states, actions, rewards, next_states, dones)
 
     def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done)
@@ -121,8 +121,8 @@ def train():
         agent.remember(tensor_state_old,silo_selected_list,game.reward,tensor_state_new,game.game_Over)
 
         #check game over condition and check winning condition
-        game.check_Win_Condition(state_new)
-        game.check_Game_Over(state_new)
+        #game.check_Win_Condition(state_new)
+        bol = game.check_Game_Over(state_new)
         print('\n------------------------------------------------------------------------------')
         print("Round :",i+1,' Agent Selected :',s,"SIlo Selected : ",silo_selected,"reward : ",game.reward,"\nCurrent state : ",state_new)
         print('------------------------------------------------------------------------------\n')
@@ -130,7 +130,7 @@ def train():
         if i==15:
             game.game_Over=True
 
-        if game.game_Over:
+        if not bol:
             # train long memory, plot result
             print('Final State : ',state_new)
             game.reset()
