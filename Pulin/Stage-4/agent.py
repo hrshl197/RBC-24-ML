@@ -16,7 +16,7 @@ class blueAgent:
         self.epsilon=0 # control the randomness
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
-        self.model = Linear_QNet(3, 256, 5) 
+        self.model = Linear_QNet(3, 256, 3) 
         self.trainer = QTrainer(self.model, LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
@@ -46,7 +46,7 @@ class blueAgent:
                 #state0 = torch.tensor(state, dtype=torch.float)
                 state0 = torch.tensor([[float(item) if item else 0.0 for item in inner_list] for inner_list in state], dtype=torch.float32)
                 prediction = self.model(state0)
-                move = torch.argmax(prediction).item()
+                move = torch.argmax(prediction,dim=1).item()
                 silo_selected[move] = 1
         except:
             print("An error generated")
