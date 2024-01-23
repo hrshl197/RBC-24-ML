@@ -132,10 +132,11 @@ def train():
 
         if not bol:
             # train long memory, plot result
+            print("__________________________________________Game Over__________________________________________")
             print('Final State : ',state_new)
             game.reset()
             agent.n_games+=1
-            agent.train_long_memory()
+            #agent.train_long_memory()
             
             if game.reward>record:
                 record=game.reward
