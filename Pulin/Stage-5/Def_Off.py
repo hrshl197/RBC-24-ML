@@ -5,7 +5,7 @@ class demo:
         cnt = 0
         for i, basket in enumerate(basket_stacks):
             if basket == [1,1,1] or  basket == [1,-1,1] or basket == [-1,1,1]:
-                cnt += 1
+                cnt += 1 
         if cnt == 2:
             return True
         else:
@@ -80,9 +80,9 @@ class demo:
 
         return selected_move
 
-d =demo()
+"""d =demo()
 s = d.main([[-1, 1, 1], [1, 1, 1], [-1, 1, -1], [1, -1, 0], [-1, -1, -1]])
-print(s)
+print(s)"""
 
 #[[-1, 1, 1], [-1, 1, -1], [-1, -1, -1], [1, -1, 0], [1, 1, 1]]
 #[[-1, 1, -1], [1, 1, 1], [1, -1, 1], [1, 1, -1], [1, -1, 0]]

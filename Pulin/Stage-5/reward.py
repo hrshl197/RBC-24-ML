@@ -13,7 +13,7 @@ class reward:
     self.redwin = 0
     self.red_reward = 0
     self.blue_reward = 0
-
+ 
     #reward = [0,0]
 
     for i in final_Silo_state:

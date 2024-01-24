@@ -9,7 +9,7 @@ class siloEnvironment:
         self.reward=0
         self.game_Over = False
 
-    def reset(self):
+    def reset(self): 
         self.Silo_State=[[0, 0, 0],[0, 0, 0],[0, 0, 0],[0, 0, 0],[0, 0, 0]]
         self.red_won_silo=0
         self.blue_won_silo=0
@@ -33,12 +33,22 @@ class siloEnvironment:
     def total_balls(self,state):
 
         total_balls_count = 0
-        for i, basket in enumerate(state):
-            for j in basket:
-                if basket[j] != 0:
+        for basket in state:
+            for ball in basket:
+                if ball != 0:
                     total_balls_count += 1
         #print(total_balls_count)
         return total_balls_count
+
+    #def total_balls(self,state):
+
+    #    total_balls_count = 0
+    #    for i, basket in enumerate(state):
+    #        for j in basket:
+    #            if basket[j] != 0:
+    #                total_balls_count += 1
+        #print(total_balls_count)
+    #    return total_balls_count
     
 
     #TODO: check if game over or not for two conditions(win,full_silo)
@@ -65,3 +75,7 @@ class siloEnvironment:
             if j not in state[i]:
                 silo_list.append(i)
         return silo_list
+
+"""s=siloEnvironment()
+print(s.total_balls([[1, 1, 0], [1, 1, 0], [1, 1, 0], [1, 1, 0], [-1, -1, -1]]))
+#[[1, 1, 0], [1, 1, 0], [1, 1, 0], [1, 1, 0], [-1, -1, -1]]"""
