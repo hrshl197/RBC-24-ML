@@ -16,7 +16,7 @@ class blueAgent:
         self.epsilon=0 # control the randomness
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
-        self.model = Linear_QNet(3, 1024, 1) 
+        self.model = Linear_QNet(3, 256, 1) 
         self.trainer = QTrainer(self.model, LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
@@ -96,7 +96,7 @@ def train():
     game = siloEnvironment()
 
     i=0
-    while agent.n_games<1000:
+    while True: #agent.n_games<1000
         # not taking this for first for loop  
         if i==0:
             # get old state
