@@ -1,4 +1,4 @@
-from Environment import siloEnvironment as ev
+#from Environment import siloEnvironment as ev
 
 class reward:
   def __init__(self):
@@ -7,7 +7,7 @@ class reward:
     self.bluewin = 0
     self.redwin = 0
 
-  def reward_func(self,intial_Silo_state,final_Silo_state):
+  def reward_func(self,final_Silo_state):
 
     self.bluewin = 0
     self.redwin = 0
@@ -17,20 +17,20 @@ class reward:
     #reward = [0,0]
 
     for i in final_Silo_state:
-      if i == ['o','o','o'] or i == ['o','x','o'] or i == ['x','o','o']:
+      if i == [1,1,1] or i == [1,-1,1] or i == [-1,1,1]:
         self.blue_reward += 10
         self.red_reward  += -10
         self.bluewin +=1
         
-      elif i == ['x','x','x'] or i == ['x','o','x'] or i == ['o','x','x']:
+      elif i == [-1,-1,-1] or i == [-1,1,-1] or i == [1,-1,-1]:
         self.blue_reward += -10
         self.red_reward  += 10
         self.redwin +=1
 
     """for j in final_Silo_state:
-      if j == ['o','o','o'] or j == ['o','x','o'] or j == ['x','o','o']:
+      if j == [1,1,1] or j == [1,-1,1] or j == [-1,1,1]:
           self.bluewin +=1
-      elif j == ['x','x','x'] or j == ['x','o','x'] or j == ['o','x','x']:
+      elif j == [-1,-1,-1] or j == [-1,1,-1] or j == [1,-1,-1]:
           self.redwin +=1"""
     
     if self.bluewin == 3:
@@ -44,11 +44,7 @@ class reward:
     #reward = [self.blue_reward,self.red_reward]
     
 
-    return self.blue_reward,self.red_reward
-
-    
-
-    
+    return self.blue_reward
 
 
 
