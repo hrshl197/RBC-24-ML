@@ -1,5 +1,5 @@
 import torch,random,numpy as np 
-from Def_Off import demo as D 
+from Def_Off_2 import demo as D 
 from collections import deque
 from Environmen_new import siloEnvironment
 from model import Linear_QNet, QTrainer
@@ -16,7 +16,7 @@ class blueAgent:
         self.epsilon=0 # control the randomness
         self.gamma=0.9 # discount rate
         self.memory=deque(maxlen=MAX_MEMORY) # pop from left is max memory get full 
-        self.model = Linear_QNet(3, 256, 1) 
+        self.model = Linear_QNet(3, 32 ,64,128,64,32, 1) 
         self.trainer = QTrainer(self.model, LR, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
@@ -44,14 +44,15 @@ class blueAgent:
             #silo_selected[move] = 1
             while move in filled_silo_list:
                 move = random.randint(0, 4)
-            # TODO print(filled_silo_list,"Exploration")
+            print(filled_silo_list,"Exploration")
             return move
         else:#exploit
             state0 = torch.tensor(state, dtype=torch.float)
+            #TODO state0 = state0.view(-1, 5) #this is for transpose of tensor
             prediction = self.model(state0)
             move = torch.argmax(prediction).item()
             #silo_selected[move] = 1
-            # TODO print(filled_silo_list,"Exploitation")
+            print(filled_silo_list,"Exploitation")
             temp=1
             sorted_indices = torch.argsort(prediction, descending=True)
             while move in filled_silo_list:
@@ -75,16 +76,10 @@ class blueAgent:
         return state_old
     
     def take_action_red(self,state_old,silo_selected):
-        if 0<=silo_selected<=4: # Checking wheather the selected silo number is in five
-            if len(state_old[silo_selected])<4: # checking wheather the silo is empty
-                for i in range(len(state_old[silo_selected])):
-                    if state_old[silo_selected][i] == 0:
-                        state_old[silo_selected][i] = -1
-                        break
-            else:
-                print("Silo is already filled")
-        else:
-            print("Error in Silo Number",silo_selected)
+        for i in range(len(state_old[silo_selected])):
+            if state_old[silo_selected][i] == 0:
+                state_old[silo_selected][i] = -1
+                break
         return state_old
 
 def train():
@@ -117,6 +112,13 @@ def train():
             state_new = agent.take_action_blue(state_old,silo_selected)
         elif s==1:
             # Red Agent
+            #TODO for random enemy
+            """silo_selected = random.randint(0,4)
+            while silo_selected in filled_silo_list:
+                silo_selected = random.randint(0,4)
+            state_new = agent.take_action_red(state_old,silo_selected)"""
+
+            #TODO for def_off use
             temp_instance=D() # instance of Deff_off
             silo_selected=temp_instance.main(state_old)
             state_new = agent.take_action_red(state_old,silo_selected)
@@ -131,23 +133,23 @@ def train():
 
         #check game over condition and check winning condition
         bol = game.check_Game_Over(state_new)
-        # TODO print("Round :",i,' Agent Selected :',s,"Silo Selected : ",silo_selected,"reward : ",game.reward,"\nCurrent state : ",state_new)
+        print("Round :",i,' Agent Selected :',s,"Silo Selected : ",silo_selected,"reward : ",game.reward,"\nCurrent state : ",state_new)
 
         if bol:
-            # TODO print(i)
+            print(i)
             i=0
             # train long memory, plot result
-            # TODO print("__________________________________________Game Over__________________________________________")
-            # TODO print('Final State : ',state_new)
+            print("__________________________________________Game Over__________________________________________")
+            print('Final State : ',state_new)
             #game.reset()
             agent.n_games+=1
             agent.train_long_memory() 
             
-            if game.reward>=record:
+            if game.reward>=0:
                 record=game.reward
                 agent.model.save() 
 
-            # TODO print('Game', agent.n_games, 'Score', game.reward, 'Record:', record)
+            print('Game', agent.n_games, 'Score', game.reward, 'Record:', record)
 
             plot_scores.append(game.reward)
             total_score += game.reward
