@@ -93,6 +93,7 @@ def train():
     i=0
     while True: #agent.n_games<1000
         # not taking this for first for loop  
+
         if i==0:
             # get old state
             state_old = game.Silo_State
@@ -107,6 +108,7 @@ def train():
         
         # perform move and get new state
         s = random.randint(0,1)
+
         if s==0:
             # Blue Agent
             state_new = agent.take_action_blue(state_old,silo_selected)

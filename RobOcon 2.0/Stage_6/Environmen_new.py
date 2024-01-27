@@ -18,17 +18,20 @@ class siloEnvironment:
         self.game_Over=False
     
     def check_win(self,state):
+
+        flag = False
         for i in state:
             if i == [1,1,1] or i == [1,-1,1] or i == [-1,1,1]:
                 self.blue_won_silo+=1
             elif i == [-1,-1,-1] or i == [-1,1,-1] or i == [1,-1,-1]:
                 self.red_won_silo+=1
         if self.blue_won_silo==3 or self.red_won_silo==3:
-            return True
+            flag = True
+        
         #TODO: i think it may not needed
         self.blue_won_silo=0
         self.red_won_silo=0
-        return False
+        return flag
     
     def total_balls(self,state):
 
