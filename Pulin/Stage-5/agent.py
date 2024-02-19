@@ -117,8 +117,8 @@ def train():
             state_new = agent.take_action_blue(state_old,silo_selected)
         elif s==1:
             # Red Agent
-            temp_instance=D() # instance of Deff_off
-            silo_selected=temp_instance.main(state_old)
+            """temp_instance=D() # instance of Deff_off
+            silo_selected=temp_instance.main(state_old)"""
             state_new = agent.take_action_red(state_old,silo_selected)
         
 
