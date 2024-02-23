@@ -1,8 +1,11 @@
 import copy
+from Def_Off import demo as do
+
 class silo:
     def  __init__(self):
         self.state=[]
         self.possible_states=[]
+        self.score_array=[]
 
     #Get Silo state from CV
     def get_state(self):
@@ -50,13 +53,27 @@ class silo:
     
     #Finalize the move by changing the state with the value passed in it 
     def make_move(self,best_state):
-        pass
+        self.state = best_state
 
         #Returns the best possible state from all Possible states
     def generate_heuristic_value(self):
-        pass
+        self.score_array=[]
+        hv = do()
+        hv.two_o_mode_check=hv.check_2_o_winning_condition
+        for i in range(5):
+            score=0
+            for basket in self.possible_states[i]:
+                priority = hv.evaluate_priority(basket)
+                score+=priority
+            self.score_array.append(score)
+
+    #Select the next state
+    def select_state(self):
+        max_score=self.score_array.index(max(self.score_array))
+        self.make_move(self.possible_states[max_score])
 
     def generate_next_state(self):
+        self.possible_states=[]
         for i in range(5):
             self.possible_states.append(copy.deepcopy(self.enter_blue_ball(i)))
         print(self.possible_states)
@@ -64,4 +81,11 @@ class silo:
 si=silo()
 si.enter_state() #Entering the initial state
 si.generate_next_state() #Generating all the next possible state
+si.generate_heuristic_value()
 print(si.state) #Printing the current state
+print(si.score_array)
+si.select_state()
+si.generate_next_state() #Generating all the next possible state
+si.generate_heuristic_value()
+print(si.state) 
+print(si.score_array)
