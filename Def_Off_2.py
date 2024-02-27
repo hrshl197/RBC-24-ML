@@ -30,7 +30,7 @@ def check_1_x_winning_condition(basket_stacks):
         return False
 
 def evaluate_priority(basket):
-    if one_x_mode_check:
+    if one_x_mode_check or two_x_mode_check:
         if basket == ['', '', '']:
             return 3
         elif basket == ['o', '', '']:
@@ -47,23 +47,6 @@ def evaluate_priority(basket):
             return 5
         else:
             return 0  # Def_for_1_x
-    if two_x_mode_check:
-        if basket == ['', '', '']:
-            return 3
-        elif basket == ['o', '', '']:
-            return 2
-        elif basket == ['x', '', '']:
-            return 1
-        elif basket == ['o', 'x', '']:
-            return 7
-        elif basket == ['o', 'o', '']:
-            return 4
-        elif basket == ['x', 'o', '']:
-            return 6
-        elif basket == ['x', 'x', '']:
-            return 5
-        else:
-            return 0  # Def_for_2_x
     else:
         if basket == ['', '', '']:
             return 3
