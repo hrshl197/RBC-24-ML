@@ -76,12 +76,36 @@ def apply_move(basket_stack):
 def select_move(basket_stacks):
     max_priority = 0
     selected_move = None
-
+    arr=[]
     for i, basket in enumerate(basket_stacks):
         priority = evaluate_priority(basket)
+        arr.append(priority)
         if priority > max_priority:
             max_priority = priority
             selected_move = i
+    print(arr)
+    print(max_priority)
+    
+    seen = set()
+    duplicates = set()
+    for value in arr:
+        if value in seen:
+            duplicates.add(value)
+        else:
+            seen.add(value)
+    #print(duplicates)
+
+    if max_priority in duplicates:
+        if max_priority == arr[2]:
+            selected_move = 2
+        elif max_priority == arr[1]:
+            selected_move = 1
+        elif max_priority == arr[3]:
+            selected_move = 3
+        elif max_priority == arr[0]:
+            selected_move = 0
+        else:
+            selected_move = 4
 
     return selected_move
 
@@ -89,7 +113,7 @@ def select_move(basket_stacks):
 # Example usage:
 #right_mostplace=top &left_mostplace=bottom
 
-basket_stacks =   [['o', 'x', 'x'], ['x', 'x', 'o'], ['o', 'o', ''], ['x', 'x', ''], ['o', 'o', 'o']]
+basket_stacks =   [['x', 'o', ''], ['o', 'o', ''], ['o', 'o', 'o'], ['o', '', ''], ['o', '', '']]
 
 one_x_mode_check = check_1_x_winning_condition(basket_stacks)
 two_x_mode_check = check_2_x_winning_condition(basket_stacks)
