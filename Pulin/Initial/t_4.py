@@ -10,7 +10,7 @@ def generate_list_states(current_state, index, max_value, result):
 def print_list_states(states):
     i=1
     for state in states:
-        print(state,i)
+        print(state)
         i=i+1
 
 # Define parameters
